@@ -9,15 +9,29 @@ import matplotlib.pyplot as plt
 import os
 import leerArchiv
 import formatoBin
+import time
+import numpy as np
 
-#oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+#_____________________________________________________________________________________________________________________________________________________
 
-#En este ejemplo se realizará con el archivo de texto llamado evangelio_segun_marcos.txt 
-# Ejemplo de uso
-ruta_del_archivo = "evangelio_segun_marcos.txt"
-cadena = leerArchiv.leer_archivo_txt(ruta_del_archivo)
-#cadena = 'Mi Pasion es programar'
-#oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+# Ejemplos de uso
+
+#Ejemplo 1
+#ruta_del_archivo = "evangelio_segun_marcos.txt"
+#cadena = leerArchiv.leer_archivo_txt(ruta_del_archivo)
+
+#Ejemplo 2
+#ruta_del_archivo = "Never_Gonna_Give_You_Up.txt"
+#cadena = leerArchiv.leer_archivo_txt(ruta_del_archivo)
+
+#Ejemplo 1500 palabras
+#ruta_del_archivo = "texto100.txt"
+#cadena = leerArchiv.leer_archivo_txt(ruta_del_archivo)
+
+#Cadena La programacion es mi pasion
+cadena = 'La programacion es mi pasion'
+
+#_____________________________________________________________________________________________________________________________________________________
 
 # Crear la clase NodoArbol
 class NodoArbol(object):
@@ -33,6 +47,10 @@ class NodoArbol(object):
 
     def __str__(self):
         return '%s_%s' % (self.izquierda, self.derecha)
+
+
+# Medir el tiempo de ejecución
+tiempo_inicio = time.time()
 
 # Función principal que implementa la codificación de huffman
 def arbol_codificacion_huffman(nodo, izquierda=True, binario=''):    # toma un nodo del árbol y genera un diccionario que representa la codificación binaria para cada símbolo en el árbol.
@@ -184,7 +202,126 @@ print(f'Tamaño del árbol en formato .pkl: {size_pkl_file} bytes')
 
 
 
+#_____________________________________________________________________________________________________________________________________________________
+
+# Calcular Tiempos
+
+tiempo_fin = time.time()
+tiempo_ejecucion = tiempo_fin - tiempo_inicio
+
+# Imprimir o almacenar los resultados
+print(f'Tiempo de ejecución: {tiempo_ejecucion} segundos')
+
+# Graficar los resultados
+
+# Datos
+nombres_archivos = ["texto 100.txt", "texto 200.txt", "texto 500.txt", "texto 1000.txt", "texto 1500.txt"]
+tamanos_entrada = [60156, 122657, 307347, 618497, 622182]
+tamanos_comprimidos = [31570, 64370, 161247, 324493, 326509]
+porcentajes_compresion = [47.52, 47.52, 47.54, 47.54, 47.52]
+tamanos_txt = [252552, 514959, 1289969, 2595937, 2612069]
+tamanos_pkl = [849, 849, 867, 867, 867]
+tiempos_ejecucion = [0.04474210739135742, 0.07880115509033203, 0.19898223876953125, 0.48001527786254883, 0.48098039627075195]
+
+# Gráficos
+plt.figure(figsize=(10, 6))
+
+# Gráfico 1 - Tamaños de archivos
+plt.subplot(2, 2, 1)
+plt.plot(tamanos_entrada, label='Entrada')
+plt.plot(tamanos_comprimidos, label='Comprimido')
+plt.xlabel('Número de archivo')
+plt.ylabel('Tamaño (bytes)')
+plt.title('Tamaños de archivos')
+plt.legend()
+
+# Gráfico 2 - Porcentaje de compresión
+plt.subplot(2, 2, 2)
+plt.plot(porcentajes_compresion, marker='o', linestyle='-', color='r')
+plt.xlabel('Número de archivo')
+plt.ylabel('Porcentaje de compresión (%)')
+plt.title('Porcentaje de compresión')
+
+# Gráfico 3 - Tamaños de archivos txt y pkl
+plt.subplot(2, 2, 3)
+plt.plot(tamanos_txt, label='TXT')
+plt.plot(tamanos_pkl, label='PKL')
+plt.xlabel('Número de archivo')
+plt.ylabel('Tamaño (bytes)')
+plt.title('Tamaños de archivos TXT y PKL')
+plt.legend()
+
+# Gráfico 4 - Tiempos de ejecución
+plt.subplot(2, 2, 4)
+plt.plot(tiempos_ejecucion, marker='o', linestyle='-', color='g')
+plt.xlabel('Número de archivo')
+plt.ylabel('Tiempo de ejecución (segundos)')
+plt.title('Tiempos de ejecución')
+
+plt.tight_layout()
+plt.show()
 
 
+# Datos
+n = np.array([100, 200, 500, 1000, 1500])
+tiempos_ejecucion = np.array([0.04474210739135742, 0.07880115509033203, 0.19898223876953125, 0.48001527786254883, 0.48098039627075195])
 
+# Ajuste de la complejidad O(n log n)
+complejidad_teorica = n * np.log(n)
 
+# Escalar tiempos a milisegundos
+tiempos_ejecucion_ms = tiempos_ejecucion * 1000
+
+# Último valor del tiempo introducido
+ultimo_valor_tiempo = tiempos_ejecucion_ms[-1]
+
+# Gráfico
+plt.plot(n, tiempos_ejecucion_ms, marker='o', linestyle='-', color='g', label='Datos reales')
+plt.plot(n, complejidad_teorica * 1000, linestyle='--', color='r', label='O(n log n)')
+
+plt.xlabel('Tamaño de Entrada (n)')
+plt.ylabel('Tiempo de Ejecución (milisegundos)')
+plt.title('Complejidad Práctica del Algoritmo')
+plt.legend()
+
+# Ajustar la escala del eje y
+plt.ylim(0, ultimo_valor_tiempo + 10)
+
+# Añadir anotaciones
+for i, txt in enumerate(tiempos_ejecucion_ms):
+    plt.annotate(f'{txt:.2f} ms', (n[i], tiempos_ejecucion_ms[i]), textcoords="offset points", xytext=(0,5), ha='center')
+
+plt.show()
+
+# Cargar el árbol desde el archivo pickle
+with open('arbol_huffman.pkl', 'rb') as archivo_arbol:
+    arbol_cargado = pickle.load(archivo_arbol)
+
+# Crear un grafo dirigido utilizando NetworkX
+G = nx.DiGraph()
+
+# Función recursiva para agregar nodos y aristas al grafo
+def agregar_nodos_y_aristas(grafo, nodo, etiqueta_padre=None):
+    if isinstance(nodo, str):
+        # Es un nodo hoja (carácter)
+        grafo.add_node(nodo)
+        if etiqueta_padre is not None:
+            grafo.add_edge(etiqueta_padre, nodo)
+    else:
+        # Es un nodo interno
+        etiqueta_nodo = f"{nodo.izquierda}_{nodo.derecha}"
+        grafo.add_node(etiqueta_nodo)
+        if etiqueta_padre is not None:
+            grafo.add_edge(etiqueta_padre, etiqueta_nodo)
+        agregar_nodos_y_aristas(grafo, nodo.izquierda, etiqueta_nodo)
+        agregar_nodos_y_aristas(grafo, nodo.derecha, etiqueta_nodo)
+
+# Llenar el grafo con nodos y aristas
+agregar_nodos_y_aristas(G, arbol_cargado)
+
+# Dibujar el grafo utilizando Matplotlib
+posiciones = nx.spring_layout(G)
+nx.draw(G, pos=posiciones, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue', font_size=8, edge_color='gray')
+
+# Mostrar el gráfico
+plt.show()
